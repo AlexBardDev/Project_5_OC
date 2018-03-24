@@ -1,7 +1,16 @@
+"""
+This script creates the tables and the constraints for the MySQL database.
+
+I use the ORM called 'peewee' instead of a basic driver python-mysql because
+with 'peewee', my code is more portable.
+"""
+
+#External library
 from peewee import *
 
+#Create the 'database object' for the MySQL database
 db = MySQLDatabase('pur_beurre_db', user='script',
-    password="SUPERmotdepasse3000", host="127.0.0.1")
+                   password="SUPERmotdepasse3000", host="127.0.0.1")
 
 class Category(Model):
     """This class is the 'category' table for the MySQL database"""
@@ -12,7 +21,7 @@ class Category(Model):
         database = db
 
 class FoodSubstituted(Model):
-    """This class is the 'food_substituted' table for the MySQL database"""
+    """This class is the 'foodsubstituted' table for the MySQL database"""
 
     product_name = CharField(max_length=50)
     substituted_product_name = CharField(max_length=50)
@@ -25,6 +34,7 @@ class FoodSubstituted(Model):
     class Meta:
         database = db
 
+#Create the tables in the MySQL database
 db.connect()
 db.create_tables([FoodSubstituted, Category])
 db.close()
