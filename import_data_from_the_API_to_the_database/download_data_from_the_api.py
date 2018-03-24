@@ -10,7 +10,7 @@ the ORM called 'peewee'.
 import requests
 
 #Local library
-from script_create_database import db, Category, FoodSubstituted
+from create_database import db, Category, FoodSubstituted
 import functions
 
 #Some constants
