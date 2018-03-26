@@ -34,3 +34,6 @@ This "user path" is compulsory by OpenClassrooms.
 When you see the information about a product and its substitute, you also have a message telling you if the substitute is already registered or not in your bookmarks.
 
 If it's not, you can register the substitute in your bookmarks.
+
+# Feature 3 : Watch all the substitution
+When you start the program, entres "2". Then, you can choose what substitute you need. After that, all the information will be displayed on the screen.
