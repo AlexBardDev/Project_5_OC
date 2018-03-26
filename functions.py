@@ -17,42 +17,18 @@ def valid_input(list_objects, data_input):
 
     return is_valid
 
+def select(list_objects, message):
+    """pass"""
 
-def select_category():
-    """Function that gives the category that the user selected."""
-
-    db.connect()
-
-    categories = Category.select()
     while True:
-        print("""Categories :""")
-        for category in categories:
-            print("""{} - {}""".format(category.id, category.name))
+        print(message)
+        for elt in list_objects:
+            print("""{} - {}""".format(elt.id, elt.name))
         choice = input("""Votre choix : """)
-        if valid_input(categories, choice) == True:
+        if valid_input(list_objects, choice) == True:
             break
 
-    db.close()
-
-    return [category for category in categories if category.id == int(choice)][0]
-
-def select_food(category):
-    """Function that returns the user selected food."""
-
-    db.connect()
-
-    list_food = FoodSubstituted.select().join(Category).where(Category.id == category.id)
-    while True:
-        print("""Aliments de la categorie '{}'' :""".format(category.name))
-        for food in list_food:
-            print("""{} - {}""".format(food.id, food.product_name))
-        choice = input("""Votre choix : """)
-        if valid_input(list_food, choice) == True:
-            break
-
-    db.close()
-
-    return [food for food in list_food if food.id == int(choice)][0]
+    return [elt for elt in list_objects if elt.id == int(choice)][0]
 
 def display_food(food):
     """This function displays all the information saved in the database about

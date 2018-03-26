@@ -9,6 +9,7 @@ import time
 #External library
 
 #Local library
+from import_data_from_the_API_to_the_database.create_database import db, Category, FoodSubstituted
 from functions import *
 
 print("""Bonjour cher(e) utilisateur(trice) ! Que puis-je faire pour vous aujourd'hui...""")
@@ -18,9 +19,15 @@ while ACTIVE :
     choice = input("""1 - Quel aliment souhaitez-vous remplacer ?\n2 - Retrouver mes aliments substitués.""")
 
     if choice == "1":
-        response_category = select_category()
+        with db:
+            categories = Category.select()
 
-        response_food = select_food(response_category)
+        selected_category = select(categories, "Catégories :")
+
+        with db:
+            list_food = FoodSubstituted.select().join(Category).where(Category.id == selected_category.id)
+
+        selected_food = select_food(list_food, """Aliments de la categorie '{}'' :""".format(selected_category.name))
 
         display_food(response_food)
 
