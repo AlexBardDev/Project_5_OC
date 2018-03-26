@@ -15,9 +15,7 @@ print("""Bonjour cher(e) utilisateur(trice) ! Que puis-je faire pour vous aujour
 
 ACTIVE = True
 while ACTIVE :
-    print("""1 - Quel aliment souhaitez-vous remplacer ?""")
-    print("""2 - Retrouver mes aliments substitués.""")
-    choice = input()
+    choice = input("""1 - Quel aliment souhaitez-vous remplacer ?\n2 - Retrouver mes aliments substitués.""")
 
     if choice == "1":
         response_category = select_category()
