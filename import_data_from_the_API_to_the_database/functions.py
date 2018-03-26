@@ -1,28 +1,34 @@
 """
-This scripts contains 4 functions used for downloading data from the API.
+This scripts contains 3 functions used for downloading data from the API.
 """
 
 #External library
 import requests
 
-def give_a_name(data):
-    """This function takes 1 parameter : an HTTP request object. It returns
-    the name of the product."""
+def assign_a_value(dict_data, keys):
+    """This function takes 2 parameters : a dictionnary and a list of strings.
+    These strings should be the keys of the dictionnary. The function returns the
+    assigned value from the dictionnary or an empty string."""
 
-    #Try to assign a value
-    try:
-        name = data.json()["product"]["product_name_fr"]
-    #If the key 'product_name_fr' doesn't exist
-    except KeyError:
-        name = data.json()["product"]["product_name"]
+    #An empty string
+    content = ""
 
-    return name
+    #Try to find a value using the keys of the dictionnary
+    for key in keys:
+        try:
+            content = dict_data[key]
+        except KeyError:
+            pass
+        else:
+            break
+
+    return content
 
 def find_a_substitute(url, category_name, nutriscore, list_already_substituted_food):
     """This function finds a new substitution. It takes 4 parameters : an url for
     the HTTP request, the category name of the product, the nutriscore of the
-    product and a list of all the substitution. It returns the right HTTP request
-    object and an index i."""
+    product and a list of all the substitution. It returns a dictionnary that
+    contains all the information about the new substitute."""
 
     #Some variables for this function
     page = 1
@@ -68,35 +74,17 @@ def find_a_substitute(url, category_name, nutriscore, list_already_substituted_f
                 else:
                     i += 1
 
-    return substitute_data, i
+    return substitute_data.json()["products"][i]
 
 def shorten_string(string):
-    """This function take a string as a parameter. It returns a shorter
-    string that fits in the database."""
+    """This function take a string as a parameter. It returns if
+    necessary a shorter string that fits in the database."""
 
-    #Cut the final part of the string
-    list_words = string[:50].split()
-    del list_words[-1]
-    new_string = " ".join(list_words)
+    #If the length is too long for the database
+    if len(string) >= 50:
+        #Cut the final part of the string
+        list_words = string[:50].split()
+        del list_words[-1]
+        new_string = " ".join(list_words)
 
     return new_string
-
-def assign_a_value(data, i, keys):
-    """This function takes 3 parameters : an HTTP request object, a number and
-    a list of strings. These strings should be the keys of the 'json'
-    dictionnary. It returns the assigned value from the dictionnary or an
-    empty string."""
-
-    #An empty string
-    content = ""
-
-    #Try to find a value using the keys of the dictionnary
-    for key in keys:
-        try:
-            content = data.json()["products"][i][key]
-        except KeyError:
-            pass
-        else:
-            break
-
-    return content

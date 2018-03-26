@@ -11,7 +11,7 @@ import requests
 
 #Local library
 from create_database import db, Category, FoodSubstituted
-import functions
+from functions import *
 
 #Some constants
 URL_CATEGORY = "https://fr.openfoodfacts.org/categorie/{}/{}.json"
@@ -49,26 +49,22 @@ for category in LIST_DOWNLOAD:
             print("""Warning ! There is a problem with the HTTP request to the API for food.
                 Food id : {}""".format(id_food))
         else:
+            data = data.json()["product"]
             #Assign some variables
-            food_name = functions.give_a_name(data)
-            nutriscore = data.json()["product"]["nutrition_grades"]
+            food_name = assign_a_value(data, ["product_name_fr", "product_name"])
+            nutriscore = data["nutrition_grades"]
             list_already_substituted = [food.substituted_product_name for food
                                         in FoodSubstituted.select()]
 
             #Find a new healthy substitution
-            sub_data, i = functions.find_a_substitute(URL_CATEGORY, category_name,
-                                                      nutriscore, list_already_substituted)
+            dict_data = find_a_substitute(URL_CATEGORY, category_name, nutriscore,
+                                          list_already_substituted)
 
             #Assign more variables
-            substitute_name = sub_data.json()["products"][i]["product_name_fr"]
-            #If the length is too long for the database
-            if len(substitute_name) >= 50:
-                substitute_name = functions.shorten_string(substitute_name)
-            description = functions.assign_a_value(sub_data, i,
-                                                   ["generic_name_fr", "generic_name"])
-            stores = functions.assign_a_value(sub_data, i, ["stores"])
-            code = sub_data.json()["products"][i]["code"]
-            link = "https://fr.openfoodfacts.org/produit/" + code
+            substitute_name = shorten_string(dict_data["product_name_fr"])
+            description = assign_a_value(dict_data, ["generic_name_fr", "generic_name"])
+            stores = assign_a_value(dict_data, ["stores"])
+            link = "https://fr.openfoodfacts.org/produit/" + dict_data["code"]
 
             #Save the data in the database with a transaction
             with db.atomic() as transaction:
