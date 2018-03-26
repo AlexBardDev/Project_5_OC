@@ -16,7 +16,7 @@ def assign_a_value(dict_data, keys):
     #Try to find a value using the keys of the dictionnary
     for key in keys:
         try:
-            content = dict_data[key]
+            content = str(dict_data[key])
         except KeyError:
             pass
         else:
@@ -24,7 +24,7 @@ def assign_a_value(dict_data, keys):
 
     return content
 
-def find_a_substitute(url, category_name, nutriscore, list_already_substituted_food):
+def find_a_substitute(url, category_name, nutriscore, list_already_sub_food):
     """This function finds a new substitution. It takes 4 parameters : an url for
     the HTTP request, the category name of the product, the nutriscore of the
     product and a list of all the substitution. It returns a dictionnary that
@@ -66,8 +66,9 @@ def find_a_substitute(url, category_name, nutriscore, list_already_substituted_f
             #Check that the nutriscore is better and that the substitution is a new aliment
             else:
                 if ord(possible_sub_nutriscore) < ord(nutriscore):
-                    possible_sub_name = substitute_data.json()["products"][i]["product_name_fr"]
-                    if possible_sub_name in list_already_substituted_food:
+                    possible_sub_name = assign_a_value(substitute_data.json()["products"][i],
+                                                       ["product_name_fr", "product_name"])
+                    if possible_sub_name in list_already_sub_food or possible_sub_name == "":
                         i += 1
                     else:
                         break
@@ -85,6 +86,6 @@ def shorten_string(string):
         #Cut the final part of the string
         list_words = string[:50].split()
         del list_words[-1]
-        new_string = " ".join(list_words)
+        string = " ".join(list_words)
 
-    return new_string
+    return string

@@ -61,17 +61,27 @@ for category in LIST_DOWNLOAD:
                                           list_already_substituted)
 
             #Assign more variables
-            substitute_name = shorten_string(dict_data["product_name_fr"])
+            substitute_name = assign_a_value(dict_data, ["product_name_fr", "product_name"])
+            substitute_name = shorten_string(substitute_name)
             description = assign_a_value(dict_data, ["generic_name_fr", "generic_name"])
             stores = assign_a_value(dict_data, ["stores"])
             link = "https://fr.openfoodfacts.org/produit/" + dict_data["code"]
 
             #Save the data in the database with a transaction
             with db.atomic() as transaction:
-                new_food = FoodSubstituted.create(product_name=food_name,
+                new_food = FoodSubstituted.create(name=food_name,
                                                   substituted_product_name=substitute_name,
-                                                  description=description, stores=stores,
+                                                  description=description, stores="",
                                                   link=link, id_category=new_category)
+
+            #The code below is necessary beacause the API contains some errors.
+            try:
+                new_food = FoodSubstituted.update(stores=stores).where(FoodSubstituted.name
+                                                                       == new_food.name)
+                new_food.execute()
+            #No exception type specified because the API contains too often some new errors
+            except:
+                pass
 
 #Close the connection with the MySQL database
 db.close()

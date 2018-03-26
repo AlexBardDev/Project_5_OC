@@ -23,7 +23,7 @@ class Category(Model):
 class FoodSubstituted(Model):
     """This class is the 'foodsubstituted' table for the MySQL database"""
 
-    product_name = CharField(max_length=50)
+    name = CharField(max_length=50)
     substituted_product_name = CharField(max_length=50)
     description = TextField()
     stores = CharField(max_length=50)

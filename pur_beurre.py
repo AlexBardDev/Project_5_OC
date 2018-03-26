@@ -16,7 +16,8 @@ print("""Bonjour cher(e) utilisateur(trice) ! Que puis-je faire pour vous aujour
 
 ACTIVE = True
 while ACTIVE :
-    choice = input("""1 - Quel aliment souhaitez-vous remplacer ?\n2 - Retrouver mes aliments substitués.""")
+    print("""1 - Quel aliment souhaitez-vous remplacer ?\n2 - Retrouver mes aliments substitués.""")
+    choice = input()
 
     if choice == "1":
         with db:
@@ -27,30 +28,21 @@ while ACTIVE :
         with db:
             list_food = FoodSubstituted.select().join(Category).where(Category.id == selected_category.id)
 
-        selected_food = select_food(list_food, """Aliments de la categorie '{}'' :""".format(selected_category.name))
+        selected_food = select(list_food, """Aliments de la categorie '{}'' :""".format(selected_category.name))
 
-        display_food(response_food)
+        display_food(selected_food)
 
-        save_substitute(response_food)
+        if save_substitute(selected_food) == True:
+            with db:
+                modified_food = FoodSubstituted.update(is_saved=True).where(FoodSubstituted.id == selected_food.id)
+                modified_food.execute()
 
-        while True:
-            print("""Voulez-vous revenir à l'écran d'accueil (=tapez 1) ou quittez le programme (=tapez 2)?""")
-            choice = input()
-            try:
-                choice = int(choice)
-            except ValueError:
-                print("""Vous n'avez pas entré un nombre. Veuillez recommencer...""")
-            else:
-                if choice == 1:
-                    break
-                elif choice == 2:
-                    ACTIVE=False
-                    break
-                else:
-                    print("""Vous n'avez pas entré un nombre correct. Veuillez recommencer...""")
+        if finish() == True:
+            ACTIVE = False
+
     elif choice == "2":
         pass
-        ACTIVE=False
+        ACTIVE = False
     else:
         print("""Oops, vous n'avez pas entré une commande valide. Veuillez recommencer...""")      
 
