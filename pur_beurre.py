@@ -41,8 +41,15 @@ while ACTIVE :
             ACTIVE = False
 
     elif choice == "2":
-        pass
-        ACTIVE = False
+        with db:
+            list_saved_sub = FoodSubstituted.select().where(FoodSubstituted.is_saved == True)
+
+        selected_sub = select(list_saved_sub, "Vos aliments favoris sont :")
+
+        display_food(selected_sub)
+
+        if finish() == True:
+            ACTIVE = False
     else:
         print("""Oops, vous n'avez pas entré une commande valide. Veuillez recommencer...""")      
 
